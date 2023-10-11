@@ -59,3 +59,33 @@ export async function getProductById(productId: string) {
     throw new Error(`Failed to get product: ${error.message}`);
   }
 }
+
+export async function getAllProduct() {
+  try {
+    connectToDB();
+
+    const products = await Product.find();
+
+    return products;
+  } catch (error: any) {
+    throw new Error(`Failed to get products: ${error.message}`);
+  }
+}
+
+export async function getSimilarProduct(productId: string) {
+  try {
+    connectToDB();
+
+    const currentProduct = await Product.findById(productId);
+
+    if (!currentProduct) return null;
+
+    const similarProduct = await Product.find({
+      _id: { $ne: productId },
+    }).limit(3);
+
+    return similarProduct;
+  } catch (error: any) {
+    throw new Error(`Failed to get products: ${error.message}`);
+  }
+}
